@@ -1,0 +1,24 @@
+{
+  "name": "auto-pay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feruzm/auto-pay.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/feruzm/auto-pay/issues"
+  },
+  "homepage": "https://github.com/feruzm/auto-pay#readme",
+  "dependencies": {
+    "@hiveio/dhive": "^1.2.6",
+    "event-stream": "^4.0.1",
+    "util": "^0.12.5"
+  }
+}
