@@ -47,7 +47,7 @@ stream
       if (ops.length) {
         client.broadcast.sendOperations(ops, pkey).then(
           function(result) {
-            if (result && result.tx) {
+            if (result) {
               console.log('transfer sent')
             }
           },
