@@ -2,7 +2,7 @@ const dhive = require('@hiveio/dhive')
 const es = require("event-stream");
 const util = require("util");
 
-const client = new dhive.Client(['https://api.hive.blog', 'https://rpc.ecency.com', 'https://api.deathwing.me'])
+const client = new dhive.Client(['https://rpc.ecency.com','https://api.hive.blog','https://api.deathwing.me'])
 
 //const stream = client.blockchain.getOperationsStream({mode: dhive.BlockchainMode.Latest})
 const stream = client.blockchain.getBlockStream();
@@ -21,12 +21,13 @@ stream
   .pipe(
     es.map(function(block, callback) {
       const tx = block.transactions;
+      const head_blocknum = tx[0].block_num;
       let ops = [];
-      for (let index = 0; index < tx.length; index++) {
-        const etx = tx[index];
-        const opp = etx.operations;
+      // need this to get virtual ops, otherwise stream block already has ops
+      client.database.call('get_ops_in_block', [head_blocknum, true]).then(function(opp){
+        //console.log('operations', opp);
         for (let i = 0; i < opp.length; i++) {
-          const eop = opp[i];
+          const eop = opp[i].op;
           if (eop[0] === 'proposal_pay') {
             if (eop[1].receiver === PAYER) {
               const _op = [
@@ -42,7 +43,7 @@ stream
             }
           }  
         }
-      }
+      });
       if (ops.length) {
         client.broadcast.sendOperations(ops, pkey).then(
           function(result) {
