@@ -40,22 +40,20 @@ stream
                 },
               ];
               ops.push(_op)
+              client.broadcast.sendOperations(ops, pkey).then(
+                function(result) {
+                  if (result) {
+                    console.log('transfer sent')
+                  }
+                },
+                function(error) {
+                  console.log(`error happened with transaction`, error)
+                }
+              );
             }
           }  
         }
       });
-      if (ops.length) {
-        client.broadcast.sendOperations(ops, pkey).then(
-          function(result) {
-            if (result) {
-              console.log('transfer sent')
-            }
-          },
-          function(error) {
-            console.log(`error happened with transaction`, error)
-          }
-        );
-      }
     })
   )
   .pipe(process.stdout);
