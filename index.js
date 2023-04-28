@@ -20,40 +20,44 @@ const pkey = dhive.PrivateKey.fromString(ACTIVEKEY);
 stream
   .pipe(
     es.map(function(block, callback) {
-      const tx = block.transactions;
-      const head_blocknum = tx[0].block_num;
-      let ops = [];
-      // need this to get virtual ops, otherwise stream block already has ops
-      client.database.call('get_ops_in_block', [head_blocknum, true]).then(function(opp){
-        //console.log('operations', opp);
-        for (let i = 0; i < opp.length; i++) {
-          const eop = opp[i].op;
-          if (eop[0] === 'proposal_pay') {
-            if (eop[1].receiver === PAYER) {
-              const _op = [
-                'transfer_to_savings',
-                {
-                  from: PAYER,
-                  to: "feruz",
-                  amount: `${DAMOUNT} HBD`,
-                  memo: ""
-                },
-              ];
-              ops.push(_op)
-              client.broadcast.sendOperations(ops, pkey).then(
-                function(result) {
-                  if (result) {
-                    console.log('transfer sent')
+      try {
+        const tx = block.transactions;
+        const head_blocknum = tx[0].block_num;
+        let ops = [];
+        // need this to get virtual ops, otherwise stream block already has ops
+        client.database.call('get_ops_in_block', [head_blocknum, true]).then(function(opp){
+          //console.log('operations', opp);
+          for (let i = 0; i < opp.length; i++) {
+            const eop = opp[i].op;
+            if (eop[0] === 'proposal_pay') {
+              if (eop[1].receiver === PAYER) {
+                const _op = [
+                  'transfer_to_savings',
+                  {
+                    from: PAYER,
+                    to: "feruz",
+                    amount: `${DAMOUNT} HBD`,
+                    memo: ""
+                  },
+                ];
+                ops.push(_op)
+                client.broadcast.sendOperations(ops, pkey).then(
+                  function(result) {
+                    if (result) {
+                      console.log('transfer sent')
+                    }
+                  },
+                  function(error) {
+                    console.log(`error happened with transaction`, error)
                   }
-                },
-                function(error) {
-                  console.log(`error happened with transaction`, error)
-                }
-              );
-            }
-          }  
-        }
-      });
+                );
+              }
+            }  
+          }
+        });
+      } catch (error) {
+        console.log(error)
+      }
     })
   )
   .pipe(process.stdout);
