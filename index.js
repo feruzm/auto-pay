@@ -13,7 +13,7 @@ const PAYER = process.env['PAYER'] || 'ecency'
 // the active key of the bot
 const ACTIVEKEY = process.env['ACTIVEKEY'] || die('ACTIVEKEY missing')
 // amount
-const DAMOUNT = process.env['DAMOUNT'] ? parseFloat(process.env['DAMOUNT']) : parseFloat('5.498 HBD')
+const DAMOUNT = process.env['DAMOUNT'] ? parseFloat(process.env['DAMOUNT']) : parseFloat('4.123 HBD')
 
 const pkey = dhive.PrivateKey.fromString(ACTIVEKEY);
 
